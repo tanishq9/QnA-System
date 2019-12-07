@@ -1,0 +1,5 @@
+pytorch-pretrained-bert
+scikit-learn
+nltk
+numpy
+beautifulsoup4

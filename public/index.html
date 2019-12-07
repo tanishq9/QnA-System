@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <title>TnC BERT</title>
+    <link rel="icon" type="image/gif/png" href="images/qnalogo.png">
+    <script src="main.js"></script>
+    <style>
+    
+        .container{
+            padding-top: 5px;
+            background: #ECECEC;
+            border: 0px solid #000;
+            padding: 20px 30px; 
+            -webkit-box-shadow: 10px 9px 27px 8px rgba(0,0,0,0.75);
+            -moz-box-shadow: 10px 9px 27px 8px rgba(0,0,0,0.75);
+            box-shadow: 10px 9px 27px 8px rgba(0,0,0,0.75);
+        }
+
+        body{
+            background: #787A7D;
+        }
+
+        .custom-file-input:hover{
+            cursor: pointer;
+        }
+
+        #snackbar {
+            visibility: hidden;
+            min-width: 250px;
+            margin-left: -125px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 2px;
+            padding: 16px;
+            position: fixed;
+            z-index: 1;
+            left: 50%;
+            bottom: 30px;
+            font-size: 17px;
+        }
+      
+        #snackbar.show {
+            visibility: visible;
+            -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+
+        @-webkit-keyframes fadein {
+            from {bottom: 0; opacity: 0;} 
+            to {bottom: 30px; opacity: 1;}
+        }
+        
+        @keyframes fadein {
+            from {bottom: 0; opacity: 0;}
+            to {bottom: 30px; opacity: 1;}
+        }
+        
+        @-webkit-keyframes fadeout {
+            from {bottom: 30px; opacity: 1;} 
+            to {bottom: 0; opacity: 0;}
+        }
+        
+        @keyframes fadeout {
+            from {bottom: 30px; opacity: 1;}
+            to {bottom: 0; opacity: 0;}
+        }
+
+    </style>
+</head>
+<body>
+    <nav data-aos="fade-down" data-aos-delay="100" class="navbar navbar-expand-lg navbar-dark bg-dark" style="height: 60px">
+        <a href="index.html" class="icon-link">
+        </a>
+        <p class="navbar-brand mb-0 h1 navbar-center mx-auto">QnA System</p>
+    </nav>
+    <div data-aos="fade-up" data-aos-delay="100" class="container text-center" style="margin-top: 5em;">
+        <form class="text-center">
+            <div class="custom-file" style="margin: 1em;width: 50%;text-align: left;">
+                <input name="file-name" id="filePDF" type="file" class="custom-file-input" required>
+                <label class="custom-file-label" for="customFile">Choose Content File</label>
+            </div>
+            <br>
+            <div id="loader" class="spinner-border" role="status" style="margin-bottom: 1em;display: none;"></div>
+            <br>
+            <input id="pdfSubmit" class="btn btn-primary center" value="Upload Content" style="margin: 1em;margin-top: 0em;cursor: pointer;" readonly/>
+        </form>
+        <hr>
+        <form class="text-center">
+            <div class="custom-file" style="margin: 1em;width: 50%;text-align: left;">
+                <input name="file-name" id="fileTXT" type="file" class="custom-file-input" required>
+                <label class="custom-file-label" for="customFile">Choose Questions File</label>
+            </div>
+            <br>
+            <div id="loader2" class="spinner-border" role="status" style="margin-bottom: 1em;display: none;"></div>
+            <br>
+            <input id="txtSubmit" class="btn btn-primary center" value="Upload TXT" style="margin: 1em;margin-top: 0em;cursor: pointer;" readonly/>
+            <br>
+            <div id="loader3" class="spinner-border" role="status" style="display: none;"></div>
+        </form>
+        <hr>
+        <input id="answerButton" class="btn btn-success center" value="Get Answers" style="margin: 1em;margin-top: 0em;cursor: pointer;width: 75%;" readonly/> 
+    </div>
+    <div class="container" id="ans" style="display: none;text-align: center;margin-top: 2em;">
+    </div>
+
+    <div id="snackbar"></div>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+        AOS.init();
+    </script>
+</body>
+    <script>
+        // Add the following code if you want the name of the file appear on select
+        $(".custom-file-input").on("change", function() {
+            var fileName = $(this).val().split("\\").pop();
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        });
+    </script>
+</html>
