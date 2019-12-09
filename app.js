@@ -108,7 +108,7 @@ app.post(
       }
       console.log(questionString);
       fs.unlinkSync("ques.txt");
-      // Write data in 'Output.txt' . 
+      // Write data in 'ques.txt' . 
       fs.writeFile('ques.txt', questionString, (err) => { 
         // In case of a error throw err. 
         if (err) throw err; 
