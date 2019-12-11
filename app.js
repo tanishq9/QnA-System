@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const multer = require("multer");
 const fs = require("fs");
 var PdfReader = require("pdfreader").PdfReader;
+const docxParser = require('docx-parser');
 const { PythonShell } = require("python-shell");
 const app = express();
 
@@ -14,6 +15,22 @@ app.use(express.urlencoded({extended:true}));
 app.use('/',express.static(__dirname+'/public'));
 
 // Website APIs
+
+app.post("/uploadContentDOCX",
+  multer({ dest: "./uploads" }).single("file-name"),
+  (req,res)=>{
+      console.log(req.file.path);
+      docxParser.parseDocx(req.file.path, function(data){
+        console.log(data);
+        fs.unlinkSync("test.txt");
+        try {
+          fs.writeFileSync("test.txt", data, { flag: "a" });
+          res.send("Success");
+        } catch (e) {
+          console.error(e);
+        } 
+    });
+});
 
 app.post(
   "/uploadContentTXT",
@@ -38,6 +55,7 @@ app.post(
   (req, res) => {
     fs.unlinkSync("test.txt");
     fs.readFile(req.file.path, (err, pdfBuffer) => {
+      console.log(req.file.path);
       // pdfBuffer contains the file content
       new PdfReader().parseBuffer(pdfBuffer, function(err, item) {
         if (err) res.send(err);
@@ -69,6 +87,21 @@ app.post(
   }
 );
 
+app.post("/uploadQuestionsDOCX",
+  multer({ dest: "./uploads" }).single("file-name"),
+  (req,res)=>{
+      console.log(req.file.path);
+      docxParser.parseDocx(req.file.path, function(data){
+        console.log(data);
+        fs.unlinkSync("ques.txt");
+        try {
+          fs.writeFileSync("ques.txt", data, { flag: "a" });
+          res.send("Success");
+        } catch (e) {
+          console.error(e);
+        }
+    });
+});
 
 // Android APIs
 
@@ -110,6 +143,22 @@ app.post(
   }
 );
 
+app.post("/uploadDOCXContentAndroid",
+  multer({ dest: "./uploads" }).single("file-name"),
+  (req,res)=>{
+      console.log(req.file.path);
+      docxParser.parseDocx(req.file.path, function(data){
+        console.log(data);
+        fs.unlinkSync("test.txt");
+        try {
+          fs.writeFileSync("test.txt", data, { flag: "a" });
+          res.send("Success");
+        } catch (e) {
+          console.error(e);
+        } 
+    });
+});
+
 app.post(
   "/uploadManualQuestionAndroid",
     (req, res) => {
@@ -144,6 +193,22 @@ app.post(
     });
   }
 );
+
+app.post("/uploadDOCXQuestionAndroid",
+  multer({ dest: "./uploads" }).single("file-name"),
+  (req,res)=>{
+      console.log(req.file.path);
+      docxParser.parseDocx(req.file.path, function(data){
+        console.log(data);
+        fs.unlinkSync("ques.txt");
+        try {
+          fs.writeFileSync("ques.txt", data, { flag: "a" });
+          res.send("Success");
+        } catch (e) {
+          console.error(e);
+        }
+    });
+});
 
 // Get Answers API
 

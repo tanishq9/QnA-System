@@ -14,10 +14,13 @@ $(function(){
             var fileName = $('#filePDF')[0].files[0].name;
             console.log(fileName);
             var extension = fileName.substr(fileName.length-3,fileName.length);
+            console.log(formData);
+            console.log($('#filePDF')[0].files[0]);
             if(extension=="pdf"){
                 console.log("PDF Content File");
                 $("#pdfSubmit").attr("disabled", true);
                 $("#pdfSubmit").css("cursor", "default");
+                $("#filePDF").prop("disabled",true);
                 $("#loader").show();
                 $.ajax({
                     url : 'uploadContentPDF',
@@ -30,13 +33,13 @@ $(function(){
                         myFunction("Content File Uploaded Successfully")
                         $("#pdfSubmit").attr("value", "File Uploaded");
                         $("#loader").hide();
-                        $("#filePDF").prop("disabled",true);
                     }
                 });
             }else if(extension=="txt"){
                 console.log("TXT Content File");
                 $("#pdfSubmit").attr("disabled", true);
                 $("#pdfSubmit").css("cursor", "default");
+                $("#filePDF").prop("disabled",true);
                 $("#loader").show();
                 $.ajax({
                     url : 'uploadContentTXT',
@@ -49,7 +52,25 @@ $(function(){
                         myFunction("Content File Uploaded Successfully")
                         $("#pdfSubmit").attr("value", "File Uploaded");
                         $("#loader").hide();
-                        $("#filePDF").prop("disabled",true);
+                    }
+                });
+            }else if(extension=="ocx"){
+                console.log("DOCX Content File");
+                $("#pdfSubmit").attr("disabled", true);
+                $("#pdfSubmit").css("cursor", "default");
+                $("#filePDF").prop("disabled",true);
+                $("#loader").show();
+                $.ajax({
+                    url : 'uploadContentDOCX',
+                    type : 'POST',
+                    data : formData,
+                    processData: false,  // tell jQuery not to process the data
+                    contentType: false,  // tell jQuery not to set contentType
+                    success : function(data) {
+                        console.log(data);
+                        myFunction("Content File Uploaded Successfully")
+                        $("#pdfSubmit").attr("value", "File Uploaded");
+                        $("#loader").hide();
                     }
                 });
             }else{
@@ -74,6 +95,7 @@ $(function(){
                 console.log("TXT Questions File");
                 $("#txtSubmit").attr("disabled", true);
                 $("#txtSubmit").css("cursor", "default"); 
+                $("#fileTXT").prop("disabled",true);
                 $.ajax({
                     url : 'uploadQuestionsTXT',
                     type : 'POST',
@@ -85,7 +107,24 @@ $(function(){
                         $("#loader2").hide();
                         myFunction("Questions File Uploaded Successfully");
                         $("#txtSubmit").attr("value", "File Uploaded");
-                        $("#fileTXT").prop("disabled",true);
+                    }
+                });
+            }else if(extension=="ocx" || extension=="OCX"){
+                console.log("DOCX Questions File");
+                $("#txtSubmit").attr("disabled", true);
+                $("#txtSubmit").css("cursor", "default"); 
+                $("#fileTXT").prop("disabled",true);
+                $.ajax({
+                    url : 'uploadQuestionsDOCX',
+                    type : 'POST',
+                    data : formData,
+                    processData: false,  // tell jQuery not to process the data
+                    contentType: false,  // tell jQuery not to set contentType
+                    success : function(data) {
+                        console.log(data);
+                        $("#loader2").hide();
+                        myFunction("Questions File Uploaded Successfully");
+                        $("#txtSubmit").attr("value", "File Uploaded");
                     }
                 });
             }else{
