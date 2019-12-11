@@ -94,6 +94,23 @@ app.post(
 );
 
 app.post(
+  "/uploadTXTContentAndroid",
+  multer({ dest: "./uploads" }).single("file-name"),
+  (req, res) => {
+    fs.unlinkSync("test.txt");
+    fs.readFile(req.file.path, "utf8", function(err, data) {
+        console.log(data);
+        try {
+          fs.writeFileSync("test.txt", data, { flag: "a" });
+          res.send("Success");
+        } catch (e) {
+          console.error(e);
+        } 
+    });
+  }
+);
+
+app.post(
   "/uploadManualQuestionAndroid",
     (req, res) => {
       var obj = req.body;
@@ -111,6 +128,22 @@ app.post(
       }) 
       res.send("Done");
 });
+
+app.post(
+  "/uploadTXTQuestionAndroid", multer({ dest: "./uploads" }).single("file-name"),
+  (req, res) => {
+    fs.unlinkSync("ques.txt");
+    fs.readFile(req.file.path, "utf8", function(err, data) {
+        console.log(data);
+        try {
+          fs.writeFileSync("ques.txt", data, { flag: "a" });
+          res.send("Success");
+        } catch (e) {
+          console.error(e);
+        }
+    });
+  }
+);
 
 // Get Answers API
 
@@ -143,4 +176,3 @@ app.get("/getAnswers",(req, res) => {
 app.listen(3000, () => {
     console.log("Server started");
 });
-  
