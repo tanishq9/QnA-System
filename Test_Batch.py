@@ -3,7 +3,7 @@ import pandas as pd
 from pprint import pprint
 import argparse
 from pytorch_pretrained_bert.tokenization import (BasicTokenizer,
-                                                  BertTokenizer,whitespace_tokenize)
+                                                  BertTokenizer, whitespace_tokenize)
 import collections
 import torch
 from torch.utils.data import TensorDataset
@@ -11,9 +11,10 @@ from pytorch_pretrained_bert.modeling import BertForQuestionAnswering, BertConfi
 import math
 from torch.utils.data import (DataLoader, RandomSampler, SequentialSampler,
                               TensorDataset)
-#from tqdm import tqdm
+# from tqdm import tqdm
 
 from parafinder import ParaFinder
+torch.manual_seed(123)
 
 class SquadExample(object):
     """
@@ -27,14 +28,13 @@ class SquadExample(object):
                  qas_id,
                  question_text,
                  doc_tokens,
-                unique_id):
+                 unique_id):
         self.qas_id = qas_id
         self.question_text = question_text
         self.doc_tokens = doc_tokens
         self.example_id = example_id
         self.para_text = para_text
         self.unique_id = unique_id
-
 
     def __str__(self):
         return self.__repr__()
@@ -49,14 +49,15 @@ class SquadExample(object):
         return s
 
 
-
 ### Convert paragraph to tokens and returns question_text
 def read_squad_examples(input_data):
     """Read a SQuAD json file into a list of SquadExample."""
+
     def is_whitespace(c):
         if c == " " or c == "\t" or c == "\r" or c == "\n" or ord(c) == 0x202F:
             return True
         return False
+
     i = 0
     examples = []
     for entry in input_data:
@@ -78,18 +79,16 @@ def read_squad_examples(input_data):
             qas_id = i
             question_text = qa
 
-
-            example = SquadExample(example_id = example_id,
-                    qas_id=qas_id,
-                    para_text = paragraph_text,
-                    question_text=question_text,
-                    doc_tokens=doc_tokens,
-                    unique_id = i)
-            i+=1
+            example = SquadExample(example_id=example_id,
+                                   qas_id=qas_id,
+                                   para_text=paragraph_text,
+                                   question_text=question_text,
+                                   doc_tokens=doc_tokens,
+                                   unique_id=i)
+            i += 1
             examples.append(example)
 
     return examples
-
 
 
 def _check_is_max_context(doc_spans, cur_span_index, position):
@@ -111,6 +110,7 @@ def _check_is_max_context(doc_spans, cur_span_index, position):
 
     return cur_span_index == best_span_index
 
+
 class InputFeatures(object):
     """A single set of features of data."""
 
@@ -124,7 +124,6 @@ class InputFeatures(object):
                  input_ids,
                  input_mask,
                  segment_ids):
-
         self.doc_span_index = doc_span_index
         self.unique_id = unique_id
         self.example_index = example_index
@@ -136,13 +135,9 @@ class InputFeatures(object):
         self.segment_ids = segment_ids
 
 
-
-
-
 def convert_examples_to_features(examples, tokenizer, max_seq_length,
                                  doc_stride, max_query_length):
     """Loads a data file into a list of `InputBatch`s."""
-
 
     features = []
     unique_id = 1
@@ -166,7 +161,6 @@ def convert_examples_to_features(examples, tokenizer, max_seq_length,
         tok_end_position = None
 
         max_tokens_for_doc = max_seq_length - len(query_tokens) - 3
-
 
         # We can have documents that are longer than the maximum sequence length.
         # To deal with this we do a sliding window approach, where we take chunks
@@ -209,11 +203,10 @@ def convert_examples_to_features(examples, tokenizer, max_seq_length,
             tokens.append("[SEP]")
             segment_ids.append(1)
 
-
             input_ids = tokenizer.convert_tokens_to_ids(tokens)
 
-                # The mask has 1 for real tokens and 0 for padding tokens. Only real
-                # tokens are attended to.
+            # The mask has 1 for real tokens and 0 for padding tokens. Only real
+            # tokens are attended to.
             input_mask = [1] * len(input_ids)
 
             # Zero-pad up to the sequence length.
@@ -226,19 +219,16 @@ def convert_examples_to_features(examples, tokenizer, max_seq_length,
             assert len(input_mask) == max_seq_length
             assert len(segment_ids) == max_seq_length
 
-
-            features.append(InputFeatures(unique_id = unique_id,
-                            example_index = example_index,
-                            doc_span_index=doc_span_index,
-                            tokens=tokens,
-                            token_is_max_context=token_is_max_context,
-                            token_to_orig_map=token_to_orig_map,
-                            input_ids=input_ids,
-                            input_mask=input_mask,
-                            segment_ids=segment_ids))
+            features.append(InputFeatures(unique_id=unique_id,
+                                          example_index=example_index,
+                                          doc_span_index=doc_span_index,
+                                          tokens=tokens,
+                                          token_is_max_context=token_is_max_context,
+                                          token_to_orig_map=token_to_orig_map,
+                                          input_ids=input_ids,
+                                          input_mask=input_mask,
+                                          segment_ids=segment_ids))
             unique_id += 1
-
-
 
     return features
 
@@ -255,7 +245,6 @@ def _get_best_indexes(logits, n_best_size):
     return best_indexes
 
 
-
 def get_final_text(pred_text, orig_text, do_lower_case, verbose_logging=False):
     """Project the tokenized prediction back to the original text."""
 
@@ -269,7 +258,6 @@ def get_final_text(pred_text, orig_text, do_lower_case, verbose_logging=False):
             ns_chars.append(c)
         ns_text = "".join(ns_chars)
         return (ns_text, ns_to_s_map)
-
 
     tokenizer = BasicTokenizer(do_lower_case=do_lower_case)
 
@@ -324,10 +312,9 @@ def get_final_text(pred_text, orig_text, do_lower_case, verbose_logging=False):
     return output_text
 
 
-
 _PrelimPrediction = collections.namedtuple(  # pylint: disable=invalid-name
-        "PrelimPrediction",
-["feature_index", "start_index", "end_index", "start_logit", "end_logit"])
+    "PrelimPrediction",
+    ["feature_index", "start_index", "end_index", "start_logit", "end_logit"])
 
 
 def _compute_softmax(scores):
@@ -356,8 +343,8 @@ def _compute_softmax(scores):
 _NbestPrediction = collections.namedtuple(  # pylint: disable=invalid-name
     "NbestPrediction", ["text", "start_logit", "end_logit"])
 
-def predict(examples, all_features, all_results, max_answer_length):
 
+def predict(examples, all_features, all_results, max_answer_length):
     n_best_size = 10
 
     ### Adding index to feature ###
@@ -369,10 +356,7 @@ def predict(examples, all_features, all_results, max_answer_length):
     for result in all_results:
         unique_id_to_result[result.unique_id] = result
 
-
     all_predictions = collections.OrderedDict()
-
-
 
     for example in examples:
         index = 0
@@ -384,40 +368,36 @@ def predict(examples, all_features, all_results, max_answer_length):
             start_indexes = _get_best_indexes(result.start_logits, n_best_size)
             end_indexes = _get_best_indexes(result.end_logits, n_best_size)
             for start_index in start_indexes:
-                    for end_index in end_indexes:
-                     #### we remove the indexes which are invalid @
-                        if start_index >= len(feature.tokens):
-                            continue
-                        if end_index >= len(feature.tokens):
+                for end_index in end_indexes:
+                    #### we remove the indexes which are invalid @
+                    if start_index >= len(feature.tokens):
+                        continue
+                    if end_index >= len(feature.tokens):
+                        continue
+                    if start_index not in feature.token_to_orig_map:
+                        continue
+                    if end_index not in feature.token_to_orig_map:
+                        continue
+                    if not feature.token_is_max_context.get(start_index, False):
+                        continue
+                    if end_index < start_index:
+                        continue
+                    length = end_index - start_index + 1
+                    if length > max_answer_length:
+                        continue
 
-                            continue
-                        if start_index not in feature.token_to_orig_map:
-                            continue
-                        if end_index not in feature.token_to_orig_map:
-                            continue
-                        if not feature.token_is_max_context.get(start_index, False):
-                            continue
-                        if end_index < start_index:
-                            continue
-                        length = end_index - start_index + 1
-                        if length > max_answer_length:
-                            continue
-
-                        prelim_predictions.append(
-                                        _PrelimPrediction(
-                                            feature_index=feature_index,
-                                            start_index=start_index,
-                                            end_index=end_index,
-                                            start_logit=result.start_logits[start_index],
-                                            end_logit=result.end_logits[end_index]))
-
+                    prelim_predictions.append(
+                        _PrelimPrediction(
+                            feature_index=feature_index,
+                            start_index=start_index,
+                            end_index=end_index,
+                            start_logit=result.start_logits[start_index],
+                            end_logit=result.end_logits[end_index]))
 
         prelim_predictions = sorted(
             prelim_predictions,
             key=lambda x: (x.start_logit + x.end_logit),
             reverse=True)
-
-
 
         seen_predictions = {}
         nbest = []
@@ -457,14 +437,11 @@ def predict(examples, all_features, all_results, max_answer_length):
                     start_logit=pred.start_logit,
                     end_logit=pred.end_logit))
 
-
-
         if not nbest:
-                nbest.append(
-                    _NbestPrediction(text="empty", start_logit=0.0, end_logit=0.0))
+            nbest.append(
+                _NbestPrediction(text="No result found", start_logit=0.0, end_logit=0.0))
 
         assert len(nbest) >= 1
-
 
         total_scores = []
         best_non_null_entry = None
@@ -474,11 +451,9 @@ def predict(examples, all_features, all_results, max_answer_length):
                 if entry.text:
                     best_non_null_entry = entry
 
-
         probs = _compute_softmax(total_scores)
         nbest_json = []
         for (i, entry) in enumerate(nbest):
-
             output = collections.OrderedDict()
             output["text"] = entry.text
             output["probability"] = probs[i]
@@ -487,17 +462,13 @@ def predict(examples, all_features, all_results, max_answer_length):
             nbest_json.append(output)
 
         assert len(nbest_json) >= 1
-        all_predictions[example] = nbest_json[0]["text"]
-        index=+1
+        all_predictions[example] = (nbest_json[0]["text"], nbest_json[0]["probability"])
+        index = +1
     return all_predictions
-
-
 
 
 RawResult = collections.namedtuple("RawResult",
                                    ["unique_id", "start_logits", "end_logits"])
-
-
 
 
 def main():
@@ -510,7 +481,7 @@ def main():
     parser.add_argument("--max_query_length", default=64, type=int)
     parser.add_argument("--config_file", default=None, type=str)
     parser.add_argument("--max_answer_length", default=30, type=int)
-    
+
     args = parser.parse_args()
     para_file = args.paragraph
     question_file = args.question
@@ -518,22 +489,23 @@ def main():
     device = torch.device("cpu")
 
     ### Raeding paragraph
-    #f = open(para_file, 'r')
-    #para = f.read()
-    #f.close()
+    # f = open(para_file, 'r')
+    # para = f.read()
+    # f.close()
 
     ## Reading question
-#     f = open(ques_file, 'r')
-#     ques = f.read()
-#     f.close()
+    #     f = open(ques_file, 'r')
+    #     ques = f.read()
+    #     f.close()
 
-    #para_list = para.split('\n\n')
+    # para_list = para.split('\n\n')
     f = open(para_file, "rb")
     para = f.read()
     para = para.decode('windows-1252')
-    para = para.strip("\n").replace("\r", "").replace("\n", "")
-
+    para = para.strip("\n").replace("\r", " ").replace("\n", "")
     #print(para)
+
+    # print(para)
     f.close()
 
     f_ = open(question_file, "r")
@@ -553,25 +525,21 @@ def main():
         paragraphs["id"] = i
         paragraphs["text"] = closest_para
         paragraphs["ques"] = [q]
-        i+=1
+        i += 1
         input_data.append(paragraphs)
 
-    #print(input_data)
+    # print(input_data)
     ## input_data is a list of dictionary which has a paragraph and questions
-
 
     examples = read_squad_examples(input_data)
     tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True)
 
-
     eval_features = convert_examples_to_features(
-            examples = examples,
-            tokenizer=tokenizer,
-            max_seq_length=args.max_seq_length,
-            doc_stride=args.doc_stride,
-            max_query_length=args.max_query_length)
-
-
+        examples=examples,
+        tokenizer=tokenizer,
+        max_seq_length=args.max_seq_length,
+        doc_stride=args.doc_stride,
+        max_query_length=args.max_query_length)
 
     all_input_ids = torch.tensor([f.input_ids for f in eval_features], dtype=torch.long)
     all_input_mask = torch.tensor([f.input_mask for f in eval_features], dtype=torch.long)
@@ -583,7 +551,6 @@ def main():
     model = BertForQuestionAnswering(config)
     model.load_state_dict(torch.load(model_path, map_location=device))
     model.to(device)
-
 
     pred_data = TensorDataset(all_input_ids, all_input_mask, all_segment_ids, all_example_index)
     # Run prediction for full data
@@ -599,42 +566,42 @@ def main():
         with torch.no_grad():
             batch_start_logits, batch_end_logits = model(input_ids, segment_ids, input_mask)
 
-
-        features=[]
+        features = []
         example = []
         all_results = []
 
         for i, example_index in enumerate(example_indices):
-                start_logits = batch_start_logits[i].detach().cpu().tolist()
-                end_logits =   batch_end_logits[i].detach().cpu().tolist()
-                feature = eval_features[example_index.item()]
-                unique_id = int(feature.unique_id)
-                features.append(feature)
-                all_results.append(RawResult(unique_id=unique_id,
-                                             start_logits=start_logits,
-                                             end_logits=end_logits))
+            start_logits = batch_start_logits[i].detach().cpu().tolist()
+            end_logits = batch_end_logits[i].detach().cpu().tolist()
+            feature = eval_features[example_index.item()]
+            unique_id = int(feature.unique_id)
+            features.append(feature)
+            all_results.append(RawResult(unique_id=unique_id,
+                                         start_logits=start_logits,
+                                         end_logits=end_logits))
 
-
-        output = predict(examples, features, all_results,args.max_answer_length)
+        output = predict(examples, features, all_results, args.max_answer_length)
         predictions.append(output)
-
 
     ### For printing the results ####
     index = None
     for example in examples:
-        if index!= example.example_id:
-            #print(example.para_text)
+        if index != example.example_id:
+            # print(example.para_text)
             index = example.example_id
-            #print('\n')
-            #print(colored('***********Question and Answers *************', 'red'))
+            # print('\n')
+            # print(colored('***********Question and Answers *************', 'red'))
 
         ques_text = example.question_text
         print(ques_text)
-        prediction = predictions[math.floor(example.unique_id/12)][example]
-        print(prediction)
-        #print('\n')
+        prediction, prob = predictions[math.floor(example.unique_id / 12)][example]
+        if prob > 0.35:
+            print(prediction)
+            #print(type(prediction))
+        else:
+            print("No result found")
+        # print('\n')
     ## prediction is the answer of the question
-
 
 
 if __name__ == "__main__":

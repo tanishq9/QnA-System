@@ -1,0 +1,143 @@
+Attend It
+Nothing more easier than that!!
+By Aditya Grover
+(SSCBS,DU)
+Problem Scenario
+-
+There are thousands of Attendance Taking and Management
+systems prevail
+ing in India,
+we have not been able t
+o make a
+system that can be
+widely
+used and accepted
+because of lack of
+its feasibility somewhere or else. For eg
+-
+the biometric systems
+involves the cost and data entry related problems, the online
+attendance system involves the connectivity issues,
+the facial
+recognition through AI is still
+at a developing stage, and will
+come at very high cost
+and many
+similar problems
+.
+That’s the reason that even today, we take attendance through
+roll calls
+in most of the colleges of the Best universities of India
+-
+Delhi University.
+Problem Statement
+-
+In the time where all of us have mobile phones in hand, marking
+attendance needs not be a matter of page and paper.
+On an
+average, a takes 3 minutes to mark the students through roll
+calls, multiply it by number of periods, then by days, you will
+arrive to
+a big figure. Then, giving monthly attendance reports,
+problems related to waivers and manual framework are some of
+the problems that teachers usually face.
+Then, prevailing ambiguity, keeping their own record on
+separate mobile applications and a lot
+s
+o
+f time wastage is
+something what all the students actually face.
+How does it work?
+So this attendance management system works on 3 basic pillars
+-
+1.Creating rooms using LAN WIFI
+Here, all the mobile phones are connected to the wifi of the
+respective coll
+ege
+, with the mobile application open. The
+teacher will be the host of the LAN wifi
+just on simple click in
+the mobile application
+.
+2. Random Code Generation
+Here, a random number get
+s
+generated through the host’s
+interface(teachers interface)
+say, numbers
+three is selected
+from one to six
+boxes visible on screen of teacher and student
+,
+so the students will
+be required
+to press the same number on
+their mobile phones to get themselves marked
+3.Fingerprint Verificaiton
+-
+Around 95% of smartphones
+used by DU st
+udents  either have fingerprint sensors or facial
+recognition function. This step will ensure that genuine
+attendance is only marked
+. There will be situations where the
+above verification could not be made, then the user interface of
+the teacher will be ea
+sy and smooth
+enough that just on double
+tab, the attendance would be marked for the concerned person
+as will be shown in the prototype in the PPT of 2
+nd
+round.
+Revenue Modal
+There are actually many ways in which this application can be
+made a
+profitable one.
+1
+. College Subscription Model
+-
+here the college can be
+made convinced to adopt the ‘Attend It’ systems in its college
+and we can charge subscription fee from the College
+2
+.
+Teacher
+-
+Student Subscription Model
+-
+Here the
+individ
+ual teacher pay
+s for having her personal manager to
+manage her
+attendance
+taking system that takes the attendance
+and generates daily, weekly
+and monthly
+reports and
+analysis.
+Even students can be charged as one time installation fee say
+only Rs 20 or so, as its actually
+reducing their need to maintain
+the record of their attendance somewhere else.
+3.
+.
+Advertisement based revenue Model
+-
+though this will
+be given the last priority till we actually are successful in
+establishing our model because a advertisement as revenue i
+s
+not a very good option, though our users actually belong to age
+group of 18
+-
+26 years
+.
+So it’s a time to say a permanent good bye to the roll calls and
+save time, money, paper create an efficient and a better tool
+for marking Attendance in
+colleges.
+Please insure that this information stated above is not leaked
+out and stays with the selector only.
+Thanks!
+Aditya Grover
