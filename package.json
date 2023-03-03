@@ -13,7 +13,7 @@
     "docx-parser": "^0.2.1",
     "express": "^4.17.1",
     "multer": "^1.4.2",
-    "pdf2json": "^1.1.8",
+    "pdf2json": "^1.3.1",
     "pdfreader": "^1.0.6",
     "python-shell": "^1.0.8"
   }
